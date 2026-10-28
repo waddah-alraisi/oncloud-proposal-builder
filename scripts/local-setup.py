@@ -7,6 +7,8 @@ public/config.json and an app token for the console when sign-in cannot come bac
 
     ONCLOUD_API=http://127.0.0.1:8000 APP_URL=http://127.0.0.1:5182 ADMIN_EMAIL=… ADMIN_PASSWORD=… \
         python3 scripts/local-setup.py [--sample]
+
+Against production: ONCLOUD_API=https://api.oncloud.om APP_URL=https://proposals.oncloud.om (a test workspace's admin).
 """
 import json
 import os
@@ -24,7 +26,8 @@ SCOPES = ['identity:read', 'data:rw', 'drive:rw', 'contacts:r', 'products:r', 's
 
 
 def call(method, path, token=None, body=None):
-    headers = {'Accept': 'application/json', 'Origin': APP_URL}
+    # A named client: Cloudflare in front of OnCloud refuses Python's default signature (error 1010).
+    headers = {'Accept': 'application/json', 'Origin': APP_URL, 'User-Agent': 'oncloud-proposal-builder-setup/1.0'}
     data = None
     if body is not None:
         data = json.dumps(body).encode()
