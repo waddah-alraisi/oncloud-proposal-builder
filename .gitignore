@@ -4,3 +4,4 @@ dist/
 .DS_Store
 .wrangler/
 dump.rdb
+__pycache__/
