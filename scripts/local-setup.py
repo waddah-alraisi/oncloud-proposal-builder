@@ -50,7 +50,9 @@ admin = ok(call('POST', '/login', body={'email': EMAIL, 'password': PASSWORD}), 
 
 apps = ok(call('GET', '/connected-apps?per_page=100', admin), 'list apps')
 mine = [a for a in apps if a['name'] == NAME]
-spec = {'launch_url': APP_URL + '/', 'allowed_origins': [APP_URL], 'redirect_uris': [APP_URL + '/callback'], 'scopes': SCOPES}
+spec = {'launch_url': APP_URL + '/', 'allowed_origins': [APP_URL], 'redirect_uris': [APP_URL + '/callback'], 'scopes': SCOPES,
+        # A quote's "Make a proposal" in OnCloud opens here (ADR 0054).
+        'record_links': [{'on': 'sales.quote', 'purpose': 'proposal', 'path': '/proposals/from-quote/{id}'}]}
 if mine:
     app = ok(call('PATCH', f"/connected-apps/{mine[0]['public_id']}", admin, spec), 'update app')
 else:
@@ -77,7 +79,7 @@ if '--sample' in sys.argv:
     client = first('/contacts?filters[q]=Al%20Manara&per_page=50', 'display_name', 'Al Manara Trading LLC') or ok(call('POST', '/contacts', admin, {
         'contact_type': 'business', 'display_name': {'en': 'Al Manara Trading LLC', 'ar': 'المنارة للتجارة'}, 'primary_email': 'finance@almanara.test'}), 'client')
     lists = ok(call('GET', '/price-lists?per_page=50', admin), 'price lists')
-    plist = next((p for p in lists if p.get('currency') == 'OMR'), None) or ok(call('POST', '/price-lists', admin, {
+    plist = next((p for p in lists if (p.get('currency') or {}).get('code') == 'OMR'), None) or ok(call('POST', '/price-lists', admin, {
         'name': {'en': 'Retail'}, 'code': 'retail-omr', 'currency': 'OMR', 'is_default': True}), 'price list')
 
     def product(sku, name, price, kind):

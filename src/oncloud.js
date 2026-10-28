@@ -3,7 +3,7 @@
 // CSP allows no third-party script. Signing out revokes the token on the server.
 import { authorizeUrl, challengeFor, randomString } from './pkce.js';
 
-const KEY = { verifier: 'oc.pkce', state: 'oc.state', token: 'oc.token' };
+const KEY = { verifier: 'oc.pkce', state: 'oc.state', token: 'oc.token', next: 'oc.next' };
 let config = null;
 let token = null;
 
@@ -19,6 +19,12 @@ export async function loadConfig() {
 
 const redirectUri = () => `${location.origin}/callback`;
 
+// A path on this app to come back to after sign-in: same origin only, never the callback itself.
+export function returnPath(path) {
+  const p = String(path ?? '');
+  return /^\/(?!\/)[^\\]*$/.test(p) && !p.startsWith('/callback') ? p : '/';
+}
+
 // The loaded /config.json (api_base, client_id).
 export const currentConfig = () => config;
 // The access token, for OnCloud's runtime (startApp) — the same one api() sends.
@@ -33,6 +39,8 @@ export async function signIn() {
   const state = randomString(16);
   sessionStorage.setItem(KEY.verifier, verifier);
   sessionStorage.setItem(KEY.state, state);
+  // Where sign-in started (a quote's "Make a proposal" lands on /proposals/from-quote/…): back there after it.
+  sessionStorage.setItem(KEY.next, returnPath(location.pathname + location.search));
   location.assign(authorizeUrl({
     apiBase: config.api_base,
     clientId: config.client_id,
@@ -51,7 +59,9 @@ export async function handleCallback() {
   const expected = sessionStorage.getItem(KEY.state);
   sessionStorage.removeItem(KEY.verifier);
   sessionStorage.removeItem(KEY.state);
-  history.replaceState(null, '', '/');
+  const next = returnPath(sessionStorage.getItem(KEY.next));
+  sessionStorage.removeItem(KEY.next);
+  history.replaceState(null, '', next);
 
   if (params.get('error')) throw new Error(params.get('error'));
   if (!params.get('code') || !verifier || params.get('state') !== expected) throw new Error('sign_in_state_mismatch');

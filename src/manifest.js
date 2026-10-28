@@ -44,10 +44,13 @@ export function proposalManifest() {
       },
       'pb.proposal.new': { kind: 'app', component: 'pb.new', title: L('newProposal') },
       'pb.proposal.builder': { kind: 'app', component: 'pb.builder', title: L('proposals') },
+      // A quote's "Make a proposal" in OnCloud lands here (ADR 0054).
+      'pb.proposal.fromQuote': { kind: 'app', component: 'pb.fromQuote', title: L('newProposal') },
     },
     routes: [
       { path: '/proposals', screen: 'pb.proposals', keepAlive: true },
       { path: '/proposals/new', screen: 'pb.proposal.new' },
+      { path: '/proposals/from-quote/:quote', screen: 'pb.proposal.fromQuote' },
       { path: '/proposals/:id', screen: 'pb.proposal.builder' },
     ],
     menu: [

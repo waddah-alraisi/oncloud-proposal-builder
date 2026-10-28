@@ -29,3 +29,10 @@ test('a workspace that has not bought the app, or a key the person lacks, is sai
   assert.equal(explain(Object.assign(new Error('appregistry.not_in_package'), { envelope: {} })).key, 'errPackage');
   assert.equal(explain(Object.assign(new Error('auth.forbidden'), { envelope: {} })).key, 'errForbidden');
 });
+
+test('sign-in comes back to where it started — a quote\'s "Make a proposal" — and never to another site', async () => {
+  globalThis.location ??= new URL('http://127.0.0.1:5182/');
+  const { returnPath } = await import('../src/oncloud.js');
+  assert.equal(returnPath('/proposals/from-quote/01M60F8RHH7PC836FAWJ538C07'), '/proposals/from-quote/01M60F8RHH7PC836FAWJ538C07');
+  for (const bad of ['//evil.example/x', 'https://evil.example', '/callback?code=1', '', null, '/\\evil']) assert.equal(returnPath(bad), '/', String(bad));
+});

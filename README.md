@@ -52,6 +52,9 @@ app's page — `sessionStorage.setItem('oc.token', '…'); location.reload();`.
 2. Publish `schema/proposal-builder.schema.json` (`PUT /connected-apps/{id}/schemas/draft`, then `…/schemas/{v}/publish`).
 3. Costs: `PUT /connected-installs/{id}/settings {"blind_mode": true, "blind_exempt_key": "products.costing.view"}`.
    Without it, everyone who opens the app sees the costing.
+   **Make a proposal** on a quote in OnCloud: the app's `record_links` —
+   `[{"on": "sales.quote", "purpose": "proposal", "path": "/proposals/from-quote/{id}"}]` (ADR 0054). The route builds
+   a draft from the quote, or opens the one already built from it.
 4. To offer it to other workspaces: submit it for review; once public, the platform sells it in a package —
    `PUT /platform/connected-apps/{id}/package {"entitlement_key": "apps.proposal_builder"}` — and a plan, an add-on or
    a grant to one workspace (`POST /platform/tenants/{id}/entitlements`) decides who has it.

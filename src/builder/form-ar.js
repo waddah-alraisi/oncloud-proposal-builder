@@ -573,6 +573,8 @@ export const EXACT = {
   'Add note': 'إضافة ملاحظة',
   'Proposal created': 'أُنشئ العرض',
   'Imported from JSON': 'استُورد من ملف JSON',
+  'Unlinked the client from Contacts': 'فُكّ ربط العميل بجهات الاتصال',
+  'Unlinked the quote': 'فُكّ ربط عرض السعر',
   'Before you send': 'قبل الإرسال',
   'Client name and attention filled': 'اسم العميل وجهة العناية معبّآن',
   'Valid-until date set': 'تاريخ الصلاحية محدد',
@@ -772,6 +774,8 @@ export const TEMPLATES = [
   ['CACHED IN /1M', 'الإدخال المخزّن / مليون'],
   ['Status: {a}', 'الحالة: {a}', 'split'],
   ['Added {a} from Products', 'أُضيف {a} من المنتجات'],
+  ['Built from quote {a}', 'أُنشئ من عرض السعر {a}'],
+  ['Client linked: {a}', 'رُبط العميل: {a}'],
   ['Still over {a}KB after compression — crop it or use a smaller image.', 'ما زالت أكبر من {a} كيلوبايت بعد الضغط — قصّها أو استخدم صورة أصغر.'],  ['{a}, unit', '{a}، سعر الوحدة'],
   // the most general last: a line of parts, a count of months, an amount plus VAT
   ['Why {a}', 'لماذا {a}'],

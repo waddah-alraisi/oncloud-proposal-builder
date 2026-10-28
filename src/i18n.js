@@ -27,6 +27,8 @@ const strings = {
     print: 'Print / PDF', duplicate: 'Duplicate', duplicated: 'Duplicated', deleteProposal: 'Delete this proposal?', deleted: 'Deleted',
     saveFailed: 'Not saved', conflict: 'Someone else changed this proposal. Reopen it to see their version.',
     creating: 'Creating the proposal…',
+    fromQuoteFailed: 'The proposal could not be made from this quote.',
+    fromQuoteForbidden: 'You cannot read this quote from the Proposal Builder. Ask your admin for access to quotes.',
 
     pickClient: 'Pick from Contacts', pickQuote: 'Build from a quote', pickProduct: 'Add from Products',
     pickClientTitle: 'Choose the client', pickProductTitle: 'Choose a product', pickQuoteTitle: 'Choose a quote',
@@ -68,6 +70,8 @@ const strings = {
     print: 'طباعة / PDF', duplicate: 'نسخ', duplicated: 'نُسخ', deleteProposal: 'حذف هذا العرض؟', deleted: 'حُذف',
     saveFailed: 'لم يُحفظ', conflict: 'غيّر شخص آخر هذا العرض. أعد فتحه لترى نسخته.',
     creating: 'جارٍ إنشاء العرض…',
+    fromQuoteFailed: 'تعذّر إنشاء العرض من عرض السعر هذا.',
+    fromQuoteForbidden: 'لا يمكنك قراءة عرض السعر هذا من منشئ العروض. اطلب من المسؤول صلاحية الوصول إلى عروض الأسعار.',
 
     pickClient: 'اختيار من جهات الاتصال', pickQuote: 'إنشاء من عرض سعر', pickProduct: 'إضافة من المنتجات',
     pickClientTitle: 'اختر العميل', pickProductTitle: 'اختر منتجًا', pickQuoteTitle: 'اختر عرض سعر',

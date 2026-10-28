@@ -6,7 +6,7 @@ import { arabicForm } from '../builder/form-i18n.js';
 import { applyFiles, loadCompany, saveCompany } from '../company.js';
 import * as db from '../data.js';
 import { escapeHtml as h } from '../dom.js';
-import { major } from '../builder/links.js';
+import { applyQuote, major } from '../builder/links.js';
 import { pick } from '../pickers.js';
 import { duplicateRecord, fromRecord, imageFiles, newRecord, toRecord } from '../record.js';
 import { locale, t } from '../i18n.js';
@@ -231,5 +231,35 @@ export async function newProposalView(ctx) {
   const p = document.createElement('p');
   p.className = 'text-sm text-gray-600 dark:text-gray-400';
   p.textContent = t('creating');
+  return p;
+}
+
+// /proposals/from-quote/:quote — where a quote's "Make a proposal" in OnCloud lands (ADR 0054). The proposal already
+// built from that quote, when there is one; else a new one from it: its client, currency, validity, VAT and lines.
+export async function fromQuoteView(ctx) {
+  const quoteId = ctx.params.quote;
+  const p = document.createElement('p');
+  p.className = 'text-sm text-gray-600 dark:text-gray-400';
+  try {
+    const existing = await db.list('proposal', { 'filters[quote_id]': quoteId, per_page: 1 });
+    if (existing[0]) {
+      queueMicrotask(() => ctx.go(`/proposals/${existing[0].id}`));
+      p.textContent = t('loading');
+      return p;
+    }
+    const [quote, exponents] = await Promise.all([db.quote(quoteId), currencyExponents()]);
+    const content = applyQuote({ preparedBy: ctx.me?.user?.name ?? '' }, { ...quote, exponent: exponents.get(quote.currency) ?? 2 });
+    const row = toRecord({ ...content, status: 'draft' }, { canSeeCosts: false });
+    row.history = [
+      { t: Date.now(), m: 'Proposal created' },
+      { t: Date.now(), m: `Built from quote ${content.quoteNumber}` },
+    ];
+    const created = await db.create('proposal', row);
+    queueMicrotask(() => ctx.go(`/proposals/${created.id}`));
+    p.textContent = t('creating');
+  } catch (e) {
+    p.className = 'text-sm text-red-700 dark:text-red-300';
+    p.textContent = `${t(e.message === 'auth.forbidden' || e.message === 'appregistry.scope_not_granted' ? 'fromQuoteForbidden' : 'fromQuoteFailed')} (${e.message})`;
+  }
   return p;
 }
