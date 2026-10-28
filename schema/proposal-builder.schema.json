@@ -1,0 +1,92 @@
+{
+  "collections": {
+    "proposal": {
+      "fields": {
+        "ref": {
+          "type": "text",
+          "max": 60
+        },
+        "client": {
+          "type": "text",
+          "max": 200
+        },
+        "client_id": {
+          "type": "text",
+          "max": 26
+        },
+        "quote_id": {
+          "type": "text",
+          "max": 26
+        },
+        "quote_number": {
+          "type": "text",
+          "max": 40
+        },
+        "status": {
+          "type": "enum",
+          "values": [
+            "draft",
+            "awaiting",
+            "active",
+            "won",
+            "lost"
+          ],
+          "default": "draft"
+        },
+        "currency": {
+          "type": "text",
+          "max": 3
+        },
+        "year_one": {
+          "type": "number"
+        },
+        "valid": {
+          "type": "date"
+        },
+        "issued": {
+          "type": "date"
+        },
+        "prepared_by": {
+          "type": "text",
+          "max": 120
+        },
+        "version": {
+          "type": "text",
+          "max": 20
+        },
+        "content": {
+          "type": "json"
+        },
+        "internal": {
+          "type": "json",
+          "sensitive": true
+        },
+        "history": {
+          "type": "json"
+        }
+      },
+      "indexes": [
+        [
+          "status"
+        ],
+        [
+          "client_id"
+        ],
+        [
+          "quote_id"
+        ]
+      ]
+    },
+    "company": {
+      "fields": {
+        "profile": {
+          "type": "json"
+        },
+        "costing": {
+          "type": "json",
+          "sensitive": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "oncloud-proposal-builder",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "OnCloud Proposal Builder — a connected app (static SPA) on @oncloud/ui, linked to the workspace's contacts, products and quotes",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test \"test/*.test.js\""
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.1",
+    "vite": "8.3.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

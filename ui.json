@@ -1,0 +1,8 @@
+{
+  "version": "1.1.0",
+  "base": "https://cdn.oncloud.om/ui/1.1.0",
+  "integrity": {
+    "js": "sha384-qT9PL9jRKlLZ6itjGLApiJ41OfBe/YRM4hPKwKeX7zSeHdrLaql2Nd8K6NVcXsSR",
+    "css": "sha384-aPr4p2bTqvru9ItGcsV5N+GWtQNKcxK5DdWo/cHcm7avJhER9+R3WJFE8a3N68Ga"
+  }
+}
