@@ -56,6 +56,8 @@ test('the page CSP lets in the CDN, the API and its storage, and no inline scrip
   assert.ok(csp['style-src'].includes(cdn));
   const api = new URL(JSON.parse(readFileSync('public/config.json', 'utf8')).api_base).origin;
   for (const d of ['connect-src', 'img-src']) assert.ok(csp[d].includes(api), `${d} has ${api}`);
-  assert.ok(csp['img-src'].some((o) => o.includes('storage')), 'img-src has the storage origin (images in the proposal)');
+  // The storage the API's signed links point at (SPACES_ENDPOINT, path-style): images load from it, uploads go to it.
+  const storage = csp['connect-src'].filter((o) => /^https:/.test(o) && o !== api);
+  assert.ok(storage.length && storage.every((o) => csp['img-src'].includes(o)), 'img-src has the storage origin (images in the proposal)');
   assert.ok(!csp['script-src'].includes("'unsafe-inline'"));
 });

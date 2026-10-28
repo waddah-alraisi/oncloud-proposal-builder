@@ -34,7 +34,7 @@ export function toaster(region) {
   };
 }
 
-// Latin digits in both languages: @oncloud/ui 1.1.0's number cells follow the browser's locale ("٠" in an Arabic
+// Latin digits in both languages: @oncloud/ui's number cells follow the browser's locale ("٠" in an Arabic
 // browser). Fixed in oncloud-shell; this stays until the app moves to the release that carries it.
 export function registerLatinNumbers() {
   UI().registerFormatter('number', (v) => document.createTextNode(v == null || v === '' ? '' : Number(v).toLocaleString('en-US', { maximumFractionDigits: 3 })));

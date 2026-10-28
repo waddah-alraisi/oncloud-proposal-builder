@@ -58,8 +58,9 @@ app's page — `sessionStorage.setItem('oc.token', '…'); location.reload();`.
 4. To offer it to other workspaces: submit it for review; once public, the platform sells it in a package —
    `PUT /platform/connected-apps/{id}/package {"entitlement_key": "apps.proposal_builder"}` — and a plan, an add-on or
    a grant to one workspace (`POST /platform/tenants/{id}/entitlements`) decides who has it.
-5. Deploy `dist/` (Cloudflare Pages: `public/_headers` and `public/_redirects` are ready; put the API and storage
-   origins in the content policy).
+5. Deploy `dist/` on Cloudflare Pages (`npm run build`, output `dist`, `NODE_VERSION=22`). `public/_headers` and
+   `public/config.json` point at production (`api.oncloud.om`, `cdn.oncloud.om`, `fra1.digitaloceanspaces.com`).
+   Production test steps: `oncloud-documentations/modules/proposals/RUNBOOK-production-test.md`.
 
 ## Where things are
 

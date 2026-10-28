@@ -1,4 +1,4 @@
 {
-  "api_base": "https://api.oncloud.example",
+  "api_base": "https://api.oncloud.om",
   "client_id": "REPLACE_WITH_THE_APP_PUBLIC_CLIENT_ID"
 }
