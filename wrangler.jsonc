@@ -1,0 +1,9 @@
+{
+  // Static assets only (ADR 0043): no Worker script. `public/_headers` (the CSP) ships in dist/.
+  "name": "oncloud-proposal-builder",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
