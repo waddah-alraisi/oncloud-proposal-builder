@@ -114,10 +114,10 @@ export async function builderView(ctx) {
 
   const data = fromRecord(row);
   // The images' addresses are short-lived: fetched now, from the file ids the record keeps.
-  await Promise.all(imageFiles(data).map(async ({ index, id }) => {
+  // One round trip for all of them, the company's cover included.
+  await Promise.all([...imageFiles(data).map(async ({ index, id }) => {
     try { data.appendix[index].img = await db.fileUrl(id); } catch { data.appendix[index].img = ''; }
-  }));
-  await applyFiles(company.value);
+  }), applyFiles(company.value)]);
 
   const save = saver({
     row,
