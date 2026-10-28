@@ -64,11 +64,16 @@ app's page — `sessionStorage.setItem('oc.token', '…'); location.reload();`.
 |---|---|
 | `src/builder/engine.js` | the builder itself: steps, costing, P&L, cash, the A4 document (the original script; its storage, chrome and images moved onto OnCloud) |
 | `src/builder/links.js` | contacts, products, quotes and exchange rates as proposal data |
+| `src/builder/form-ar.js`, `form-i18n.js` | the builder's form in Arabic, and what applies it as the form is drawn |
 | `src/builder/builder.css` | the builder's styles, scoped under `.pb`, in the workspace's brand |
 | `src/views/builder.js` | one proposal: loads it, hands the engine its `io`, saves on the record's revision |
 | `src/record.js` | a proposal ⇄ a `proposal` row; the company profile ⇄ the `company` row |
 | `src/manifest.js` | the app's screens in OnCloud's manifest format (the proposals list, the builder, the menu) |
 | `schema/proposal-builder.schema.json` | the app's collections: `proposal`, `company` |
 
-The builder's form and the printed document keep their English words (the document prints in English, Arabic or both,
-per proposal); the app's own words — menu, list, toolbar, pickers, errors — are in English and Arabic (`src/i18n.js`).
+Languages: the whole app follows the reader's OnCloud language, English or Arabic (right to left). The app's own words
+are in `src/i18n.js`; the builder's form — the 11 steps, the costing panel, the company profile, its messages — is
+written in English in the engine and shown in Arabic from `src/builder/form-ar.js` (exact text, plus templates for
+text with numbers or names). `test/form-ar.test.js` draws every step in three states and fails on any English left:
+**a new or reworded English string in the engine needs its Arabic there.** The printed document is separate: it
+prints in the proposal's language (English, Arabic or both), whatever the reader's.

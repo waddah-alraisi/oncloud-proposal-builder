@@ -2,13 +2,14 @@
 // its contacts, products and quotes, handed to the engine (src/builder/engine.js) as `io`. Every change is saved back
 // to the record (debounced, on the record's revision); the costing only by someone blind mode does not cover.
 import { createBuilder } from '../builder/engine.js';
+import { arabicForm } from '../builder/form-i18n.js';
 import { applyFiles, loadCompany, saveCompany } from '../company.js';
 import * as db from '../data.js';
 import { escapeHtml as h } from '../dom.js';
 import { major } from '../builder/links.js';
 import { pick } from '../pickers.js';
 import { duplicateRecord, fromRecord, imageFiles, newRecord, toRecord } from '../record.js';
-import { t } from '../i18n.js';
+import { locale, t } from '../i18n.js';
 import { confirmDelete } from '../ui.js';
 
 const SAVE_AFTER = 800;
@@ -181,10 +182,13 @@ export async function builderView(ctx) {
 
   const holder = document.createElement('div');
   holder.className = 'pb';
-  // The builder's form is written in English and laid out left to right; the document prints in the proposal's own
-  // language and direction (each sheet carries its dir), whatever the app's.
-  holder.dir = 'ltr';
-  holder.lang = 'en';
+  // The form follows the reader's language (Arabic: right to left, src/builder/form-ar.js, applied as it is drawn);
+  // the document prints in the proposal's own language and direction (each sheet carries its dir), whatever the app's.
+  const arabic = locale() === 'ar';
+  holder.dir = arabic ? 'rtl' : 'ltr';
+  holder.lang = arabic ? 'ar' : 'en';
+  const form = arabic ? arabicForm(holder) : null;
+  if (form) io.toast = (m) => ctx.toast(typeof m === 'string' ? form.translate(m) : m);
   const engine = createBuilder({ root: holder, io, chrome: chrome({ canSeeCosts, logo: io.workspace.logo }) });
 
   holder.querySelector('#btnDuplicate').addEventListener('click', async () => {
@@ -211,6 +215,7 @@ export async function builderView(ctx) {
       save.flush();
       document.removeEventListener('visibilitychange', onHide);
       engine.destroy();
+      form?.stop();
       if (current === mine) current = null;
     },
   };

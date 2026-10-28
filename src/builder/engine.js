@@ -1792,7 +1792,7 @@ function plBlock(){
     '<tr><td>One-off price</td><td class="n">' + money(pl.revOnce, pl.ccy) + '</td><td class="n">' + money(f.onceFloor, pl.ccy) + '</td></tr>' +
     '<tr><td>Subscription, per year</td><td class="n">' + money(pl.revRun, pl.ccy) + '</td><td class="n">' + (f.solvable ? money(f.runFloor, pl.ccy) : "—") + '</td></tr>' +
     f.lines.map(function(l){
-      return '<tr><td style="padding-left:18px" class="m">' + esc(l.line || "—") + ', unit</td><td class="n">' + money(l.unit, pl.ccy) + '</td><td class="n">' + (f.scale > 0 ? money(l.floor, pl.ccy) : "—") + '</td></tr>';
+      return '<tr><td style="padding-inline-start:18px" class="m">' + esc(l.line || "—") + ', unit</td><td class="n">' + money(l.unit, pl.ccy) + '</td><td class="n">' + (f.scale > 0 ? money(l.floor, pl.ccy) : "—") + '</td></tr>';
     }).join("") +
     '</tbody></table>';
 
