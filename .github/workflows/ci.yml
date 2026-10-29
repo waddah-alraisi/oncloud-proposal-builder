@@ -1,0 +1,34 @@
+# Every push and pull request: the tests and the build. OnCloud's validator and the @oncloud/ui stylesheet come from
+# the private oncloud-ui repo beside this one; without the ONCLOUD_UI_TOKEN secret (read-only Contents on
+# oncloud-ui) those two tests skip and the run says so.
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HAS_UI_TOKEN: ${{ secrets.ONCLOUD_UI_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: oncloud-proposal-builder
+      - uses: actions/checkout@v4
+        if: env.HAS_UI_TOKEN == 'true'
+        with:
+          repository: waddah-alraisi/oncloud-ui
+          token: ${{ secrets.ONCLOUD_UI_TOKEN }}
+          path: oncloud-ui
+      - if: env.HAS_UI_TOKEN != 'true'
+        run: echo "::warning::ONCLOUD_UI_TOKEN is not set — the manifest validator and stylesheet tests are skipped"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - if: env.HAS_UI_TOKEN == 'true'
+        working-directory: oncloud-ui
+        run: npm ci && npm run build
+      - working-directory: oncloud-proposal-builder
+        run: npm ci && npm test && npm run build
