@@ -13,11 +13,9 @@ Against production: ONCLOUD_API=https://api.oncloud.om APP_URL=https://proposals
 import json
 import os
 import sys
-import urllib.error
-import urllib.request
 
-API = os.environ.get('ONCLOUD_API', 'http://127.0.0.1:8000').rstrip('/') + '/api/v1'
-APP_URL = os.environ.get('APP_URL', 'http://127.0.0.1:5182').rstrip('/')
+from oncloud_api import API, APP_URL, call, ok, sign_in
+
 EMAIL = os.environ.get('ADMIN_EMAIL', 'sara@demo.oncloud.example')
 PASSWORD = os.environ.get('ADMIN_PASSWORD', os.environ.get('DEMO_PASSWORD', ''))
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -25,34 +23,10 @@ NAME = 'Proposal Builder'
 SCOPES = ['identity:read', 'data:rw', 'drive:rw', 'contacts:r', 'products:r', 'sales:r']
 
 
-def call(method, path, token=None, body=None):
-    # A named client: Cloudflare in front of OnCloud refuses Python's default signature (error 1010).
-    headers = {'Accept': 'application/json', 'Origin': APP_URL, 'User-Agent': 'oncloud-proposal-builder-setup/1.0'}
-    data = None
-    if body is not None:
-        data = json.dumps(body).encode()
-        headers['Content-Type'] = 'application/json'
-    if token:
-        headers['Authorization'] = 'Bearer ' + token
-    req = urllib.request.Request(API + path, method=method, data=data, headers=headers)
-    try:
-        with urllib.request.urlopen(req) as r:
-            return r.status, json.loads(r.read() or b'null')
-    except urllib.error.HTTPError as e:
-        return e.code, json.loads(e.read() or b'null')
-
-
-def ok(result, what):
-    status, body = result
-    if status != 200:
-        sys.exit(f'{what}: {status} {json.dumps(body)[:600]}')
-    return body['data']
-
-
-admin = ok(call('POST', '/login', body={'email': EMAIL, 'password': PASSWORD}), 'sign in')['access_token']
+admin = sign_in(EMAIL, PASSWORD)
 
 apps = ok(call('GET', '/connected-apps?per_page=100', admin), 'list apps')
-mine = [a for a in apps if a['name'] == NAME]
+mine = [a for a in apps if a['name'] == NAME and a.get('status') != 'revoked']
 spec = {'launch_url': APP_URL + '/', 'allowed_origins': [APP_URL], 'redirect_uris': [APP_URL + '/callback'], 'scopes': SCOPES,
         # A quote's "Make a proposal" in OnCloud opens here (ADR 0054).
         'record_links': [{'on': 'sales.quote', 'purpose': 'proposal', 'path': '/proposals/from-quote/{id}'}]}

@@ -55,9 +55,12 @@ app's page — `sessionStorage.setItem('oc.token', '…'); location.reload();`.
    **Make a proposal** on a quote in OnCloud: the app's `record_links` —
    `[{"on": "sales.quote", "purpose": "proposal", "path": "/proposals/from-quote/{id}"}]` (ADR 0054). The route builds
    a draft from the quote, or opens the one already built from it.
-4. To offer it to other workspaces: submit it for review; once public, the platform sells it in a package —
-   `PUT /platform/connected-apps/{id}/package {"entitlement_key": "apps.proposal_builder"}` — and a plan, an add-on or
-   a grant to one workspace (`POST /platform/tenants/{id}/entitlements`) decides who has it.
+4. To offer it to other workspaces (`scripts/release-public.py`, each step by the person who may do it):
+   register it in OnCloud's own workspace with `local-setup.py` (no `--sample`) and put that client id in
+   `public/config.json`; then `submit` (that workspace's admin, `PRIVACY_URL`), `approve` (platform staff, two-factor
+   code asked: approves the review, sets the `apps.proposal_builder` package, `GRANT_TENANT=<id>` grants one
+   workspace) and `switch-test` (a workspace that ran a private copy: installs the public app, blind mode on costs,
+   revokes the copy). A plan or an add-on that includes `apps.proposal_builder` decides who else has it.
 5. Deploy on Cloudflare Workers (static assets, `wrangler.jsonc`): build `npm run build`, deploy `npx wrangler deploy`,
    `NODE_VERSION=22`. `public/_headers` and
    `public/config.json` point at production (`api.oncloud.om`, `cdn.oncloud.om`, `sgp1.digitaloceanspaces.com`).
